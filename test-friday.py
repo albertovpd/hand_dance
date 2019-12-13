@@ -194,15 +194,15 @@ while(1):
     # #Print bounding rectangle
     x,y,w,h = cv2.boundingRect(cnts)
 
-    # sound
-    if w*y>50000:
-        player = Player()
-        player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=2.0, use_osc2=False)
-        # Play A4
-        player.play_wave(synthesizer.generate_constant_wave(440.0, 0.2))
-
-
+    # ------------------sound
+    # if w*y>50000:
+    #     player = Player()
+    #     player.open_stream()
+    #     synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=2.0, use_osc2=False)
+    #     # Play A4
+    #     player.play_wave(synthesizer.generate_constant_wave(440.0, 0.2))
+#------------------------------------------------
+    
     print(w*h)
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
     
