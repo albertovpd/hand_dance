@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+Hand_Gesture_recognition.py
+# ignore the input folder
+input/
 
 # C extensions
 *.so
