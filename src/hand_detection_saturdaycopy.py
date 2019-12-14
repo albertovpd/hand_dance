@@ -160,11 +160,11 @@ while(1):
             player.open_stream()
             synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=2.0, use_osc2=False)
             # Play A4
-            #player.play_wave(synthesizer.generate_constant_wave(440.0, 0.15))
+            player.play_wave(synthesizer.generate_constant_wave(440.0, 0.15))
             # Play C major  
-            chord = [261.626,  329.628, 391.996]
+            #chord = [261.626,  329.628, 391.996]
             #chord=[w,h,area]
-            player.play_wave(synthesizer.generate_chord(chord, 0.2))
+            player.play_wave(synthesizer.generate_chord(chord, 0.05))
 #------------------------------------------------
 
     process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
