@@ -144,7 +144,7 @@ def hdetection():
         # AREA  
         x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
         areas.append(w*h)
-        print(areas[-1])
+        print("min area: ", min(areas), "max area: :", max(areas))
         #----------------------------------------------------
         
             

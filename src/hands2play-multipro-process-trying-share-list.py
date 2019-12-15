@@ -1,4 +1,3 @@
-from __future__ import division
 import cv2
 import numpy as np
 import multiprocessing
@@ -10,8 +9,7 @@ shared_list_area = manager.list()
 
 from synthesizer import Player, Synthesizer, Waveform #from src.music_from_hands import my_sound
 
-
-# IN THIS SCRIPT I MULTIPROCESS AN INT (THE AREA)
+# IN THIS SCRIP I MULTIPROCESS A LIST (AREAS)
 
 cap = cv2.VideoCapture(0) #Open Camera object
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
@@ -135,24 +133,10 @@ while(1):
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
     
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
-
-    #from __future__ import division
-    # range1: areas,from 32k to 300k. range1=300k-32k
-    # range2: frequency of guitars: from 80 to 1200Hz
-
-
-    def renormalize(area):
-        range1=[300000,32000]
-        range2=[1200,80]
-        delta1 = range1[1] - range1[0]
-        delta2 = range2[1] - range2[0]
-        area = (delta2 * (area - range1[0]) / delta1) + range2[0]
-        return int(area)
-    areatone=renormalize(areas)
     #---------------------------------------------------
     # MULTIPROC
-    def worker1(areatone):
-        areatone
+    def worker1(area):
+        areas
         #l.append(area)
         #print(w,h,l)
         # esto funciona joder. Sigue adelante hijodeputa
@@ -171,20 +155,22 @@ while(1):
 
 # -------------------------------------------------
     # SOUND
+    
     def worker2():
-        print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area, areatone)
+        #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", areas)
+        print(min(areas),max(areas))
+        for e in areas:
+            if area>50000:
+                player = Player()
+                player.open_stream()
+                synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=2.0, use_osc2=False)
+                # Play A4
+                player.play_wave(synthesizer.generate_constant_wave(440.0, 0.15))
+                # Play C major  
+                chord = [261.626,  329.628, 391.996]
+                #chord=[w,h,area]
+                #player.play_wave(synthesizer.generate_chord(chord, 0.2))
 
-        player = Player()
-        player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, use_osc2=False)
-        if areatone>50000:
-
-            # Play A4
-            player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
-            # Play C major  
-            #chord = [261.626,  329.628, 391.996]
-            #chord=[w,h,area]
-            #player.play_wave(synthesizer.generate_chord(chord, 0.05))
 #------------------------------------------------
 
     process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
