@@ -1,4 +1,4 @@
-from __future__ import division
+#from __future__ import division
 import cv2
 import numpy as np
 import multiprocessing
@@ -7,11 +7,10 @@ import multiprocessing
 manager = multiprocessing.Manager()
 shared_list_area = manager.list()
 
-
 from synthesizer import Player, Synthesizer, Waveform #from src.music_from_hands import my_sound
 
 
-# IN THIS SCRIPT I MULTIPROCESS AN INT (THE AREA)
+# IN THIS SCRIPT I MULTIPROCESS THE CONTINUOUS OUTPUT OF THE GREEN SQUARE CAPTURING THE HAND
 
 cap = cv2.VideoCapture(0) #Open Camera object
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
@@ -100,7 +99,7 @@ while(1):
 
     cv2.circle(frame,centerMass,10,[100,0,255],2)  #Draw center mass
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(frame,'target'  ,tuple(centerMass),font,2,(100,0,255),2)     
+    cv2.putText(frame,'o'  ,tuple(centerMass),font,2,(100,0,255),2)     
 
     distanceBetweenDefectsToCenter = [] #Distance from each finger defect(finger webbing) to the center mass
     for i in range(0,len(FarDefect)):
@@ -130,76 +129,63 @@ while(1):
     # AREA  
     x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
     area=w*h
-    #print(w,h,w*h)
-    #areas.append(w*h)
-    img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
-    
+
+    img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
-
-    #from __future__ import division
-    # range1: areas,from 32k to 300k. range1=300k-32k
-    # range2: frequency of guitars: from 80 to 1200Hz
-
     # --------------------------------------------------
-    # SIGNAL NORMALISATION (TO GUITAR FREQUENCIES)
-    #If you want to normalize to [x, y], first normalize to [0, 1] via
+    # SIGNAL NORMALISATION
+    # min and max area found empirically
     max_area=300000
     min_area=32000
     tone_range = max_area - min_area
     areatone = (area - min_area ) / tone_range
-    #print("Area normalized", areatone)
-    # Then scale to [x,y] via:
-    # max_freq=900
-    # min_freq=80
-    # range2 = max_freq - min_freq
-    # areatone = int(abs((a * range2) + min_freq))
 
     #if areatone < 0.1:
     #    print("rest")
     if areatone < 0.2:
         areatone = 440
-        print("A4")
+        note="A4 440HZ"
     elif areatone >=0.2 and areatone < 0.4:
         areatone = 523
-        print("C5")
+        note="C5 523Hz"
     elif areatone >= 0.4 and areatone < 0.55:
         areatone = 587
-        print("C3")
+        note="D5 587Hz"
     elif areatone >= 0.55 and areatone < 0.7:
         areatone = 659
-        print("F5")
+        note="C5 659Hz"
     elif areatone >= 0.7 and areatone < 0.85:
         areatone = 698
-        print("G5")
+        note="F5 698Hz"
     elif areatone >= 0.85 and areatone < 1:
         areatone = 784
+        note="G5 784Hz"
     elif areatone >= 1:
         areatone = 880
-        print("A5")
+        note="A5 880Hz"
     else:
-        print("Noise")
-        #---------------------------------------------------
+        note=""
+
+    # Show tone and frequency
+    cv2.putText(frame,note,(100,100),font,2,(100,0,255),2)
+
+    #---------------------------------------------------
     # MULTIPROC
     def worker1(areatone):
-        areatone
-        #l.append(area)
-        #print(w,h,l)
-        # esto funciona joder. Sigue adelante hijodeputa
+        areatone        
+    #--------------------------------------------------
         
     ##### Show final image ########
     cv2.imshow('Dilation',frame)
     ###############################
-    
-    #Print execution time
-    #print time.time()-start_time
     
     #close the output video by pressing 'ESC'
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
 
-# -------------------------------------------------
-    # SOUND
+    # -------------------------------------------------
+    # SOUND: WORKER2
     def worker2():
         #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area)
         print("the tone of the area is" , areatone, "Hz")
@@ -207,15 +193,11 @@ while(1):
         player.open_stream()
         synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)
         
-
-            # Play A4
+        # Play A4
         player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
-            # Play C major  
-            #chord = [261.626,  329.628, 391.996]
-            #chord=[w,h,area]
-            #player.play_wave(synthesizer.generate_chord(chord, 0.05))
-#------------------------------------------------
+    #------------------------------------------------
 
+    # End of multiprocess tree
     process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
     process2 = multiprocessing.Process(target=worker2)
 
@@ -223,6 +205,7 @@ while(1):
     process2.start()
     process1.join()
     process2.join()
+    #--------------------------------------------------
 
 
 cap.release()
