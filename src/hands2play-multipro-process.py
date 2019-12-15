@@ -131,7 +131,7 @@ while(1):
     x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
     area=w*h
     #print(w,h,w*h)
-    areas.append(w*h)
+    #areas.append(w*h)
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
     
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
@@ -140,16 +140,45 @@ while(1):
     # range1: areas,from 32k to 300k. range1=300k-32k
     # range2: frequency of guitars: from 80 to 1200Hz
 
+    # --------------------------------------------------
+    # SIGNAL NORMALISATION (TO GUITAR FREQUENCIES)
+    #If you want to normalize to [x, y], first normalize to [0, 1] via
+    max_area=300000
+    min_area=32000
+    tone_range = max_area - min_area
+    areatone = (area - min_area ) / tone_range
+    #print("Area normalized", areatone)
+    # Then scale to [x,y] via:
+    # max_freq=900
+    # min_freq=80
+    # range2 = max_freq - min_freq
+    # areatone = int(abs((a * range2) + min_freq))
 
-    def renormalize(area):
-        range1=[300000,32000]
-        range2=[1200,80]
-        delta1 = range1[1] - range1[0]
-        delta2 = range2[1] - range2[0]
-        area = (delta2 * (area - range1[0]) / delta1) + range2[0]
-        return int(area)
-    areatone=renormalize(areas)
-    #---------------------------------------------------
+    #if areatone < 0.1:
+    #    print("rest")
+    if areatone < 0.2:
+        areatone = 440
+        print("A4")
+    elif areatone >=0.2 and areatone < 0.4:
+        areatone = 523
+        print("C5")
+    elif areatone >= 0.4 and areatone < 0.55:
+        areatone = 587
+        print("C3")
+    elif areatone >= 0.55 and areatone < 0.7:
+        areatone = 659
+        print("F5")
+    elif areatone >= 0.7 and areatone < 0.85:
+        areatone = 698
+        print("G5")
+    elif areatone >= 0.85 and areatone < 1:
+        areatone = 784
+    elif areatone >= 1:
+        areatone = 880
+        print("A5")
+    else:
+        print("Noise")
+        #---------------------------------------------------
     # MULTIPROC
     def worker1(areatone):
         areatone
@@ -172,15 +201,15 @@ while(1):
 # -------------------------------------------------
     # SOUND
     def worker2():
-        print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area, areatone)
-
+        #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area)
+        print("the tone of the area is" , areatone, "Hz")
         player = Player()
         player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, use_osc2=False)
-        if areatone>50000:
+        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)
+        
 
             # Play A4
-            player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
+        player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
             # Play C major  
             #chord = [261.626,  329.628, 391.996]
             #chord=[w,h,area]
