@@ -126,7 +126,7 @@ while(1):
     # AREA  
     x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
     area=w*h
-
+    #print(area)
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
     # --------------------------------------------------
