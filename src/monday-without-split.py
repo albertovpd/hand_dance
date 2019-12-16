@@ -1,4 +1,3 @@
-#from __future__ import division
 import cv2
 import numpy as np
 import multiprocessing
@@ -16,8 +15,7 @@ cap = cv2.VideoCapture(0) #Open Camera object
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-def nothing(x):
-    pass
+
 
 def Angle(v1,v2): # Function to find angle between two vectors 
  dot = np.dot(v1,v2)
@@ -34,9 +32,11 @@ cv2.namedWindow('HSV_TrackBar') # Creating a window for HSV track bars
 h,s,v = 100,100,100 # Starting with 100's to prevent error while masking
 
 # Creating track bar OPTIONAL
-#cv2.createTrackbar('h', 'HSV_TrackBar',0,179,nothing)
-#cv2.createTrackbar('s', 'HSV_TrackBar',0,255,nothing)
-#cv2.createTrackbar('v', 'HSV_TrackBar',0,255,nothing)
+def button(x):
+    pass
+cv2.createTrackbar('h', 'HSV_TrackBar',0,179,button)
+cv2.createTrackbar('s', 'HSV_TrackBar',0,255,button)
+cv2.createTrackbar('v', 'HSV_TrackBar',0,255,button)
 
 areas=[]
 
@@ -69,10 +69,7 @@ while(1):
         area = cv2.contourArea(cnt)
         if(area>max_area):
             max_area=area
-            ci=i
-    #Draw Contours
-    #cv2.drawContours(frame, cnt, -1, (122,122,0), 3)
-    #cv2.imshow('Dilation',median)            
+            ci=i   
 	 			    
     cnts = contours[ci] #Largest area contour
     hull = cv2.convexHull(cnts) #Find convex hull
@@ -99,7 +96,7 @@ while(1):
 
     cv2.circle(frame,centerMass,10,[100,0,255],2)  #Draw center mass
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(frame,'o'  ,tuple(centerMass),font,2,(100,0,255),2)     
+    #cv2.putText(frame,'o'  ,tuple(centerMass),font,2,(100,0,255),2)     
 
     distanceBetweenDefectsToCenter = [] #Distance from each finger defect(finger webbing) to the center mass
     for i in range(0,len(FarDefect)):
@@ -164,15 +161,15 @@ while(1):
         areatone = 880
         note="A5 880Hz"
     else:
-        note=""
+        note="Rest"
 
     # Show tone and frequency
-    cv2.putText(frame,note,(100,100),font,2,(100,0,255),2)
+    cv2.putText(frame, " <-- {}".format(note)  ,tuple(centerMass),font,1,(255,255,255),2)
 
     #---------------------------------------------------
     # MULTIPROC
-    def worker1(areatone):
-        return areatone     
+    #def worker1(areatone):
+    #    return areatone     
     #--------------------------------------------------
         
     ##### Show final image ########
@@ -181,31 +178,32 @@ while(1):
     
     #close the output video by pressing 'ESC'
     k = cv2.waitKey(5) & 0xFF
-    if k == 27:
+    if k == 27:  # este if va con el while true
         break
 
     # -------------------------------------------------
     # SOUND: WORKER2
+
     def worker2():
         #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area)
-        print("the tone of the area is" , areatone, "Hz")
+        #print("the tone of the area is" , areatone, "Hz")
         player = Player()
         player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)
-        
+        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
         # Play A4
-        player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
-    #------------------------------------------------
+        return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))
 
-    # End of multiprocess tree
-    process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
+    #------------------------------------------------
+        # End of multiprocess tree
+    #process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
     process2 = multiprocessing.Process(target=worker2)
 
-    process1.start()
+    #process1.start()
     process2.start()
-    process1.join()
+    #process1.join()
     process2.join()
     #--------------------------------------------------
+
 
 
 cap.release()

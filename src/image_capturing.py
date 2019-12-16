@@ -1,4 +1,3 @@
-#from __future__ import division
 import cv2
 import numpy as np
 import multiprocessing
@@ -7,40 +6,37 @@ import multiprocessing
 manager = multiprocessing.Manager()
 shared_list_area = manager.list()
 
-from synthesizer import Player, Synthesizer, Waveform #from src.music_from_hands import my_sound
 
 
-# IN THIS SCRIPT I MULTIPROCESS THE CONTINUOUS OUTPUT OF THE GREEN SQUARE CAPTURING THE HAND
 
-cap = cv2.VideoCapture(0) #Open Camera object
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+def worker1():    
 
-def nothing(x):
-    pass
 
-def Angle(v1,v2): # Function to find angle between two vectors 
- dot = np.dot(v1,v2)
- x_modulus = np.sqrt((v1*v1).sum())
- y_modulus = np.sqrt((v2*v2).sum())
- cos_angle = dot / x_modulus / y_modulus
- angle = np.degrees(np.arccos(cos_angle))
- return angle
+    cap = cv2.VideoCapture(0) #Open Camera object
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-def FindDistance(A,B): # Function to find distance between two points in a list of lists
- return np.sqrt(np.power((A[0][0]-B[0][0]),2) + np.power((A[0][1]-B[0][1]),2)) 
 
-cv2.namedWindow('HSV_TrackBar') # Creating a window for HSV track bars
-h,s,v = 100,100,100 # Starting with 100's to prevent error while masking
+    def Angle(v1,v2): # Function to find angle between two vectors 
+        dot = np.dot(v1,v2)
+        x_modulus = np.sqrt((v1*v1).sum())
+        y_modulus = np.sqrt((v2*v2).sum())
+        cos_angle = dot / x_modulus / y_modulus
+        angle = np.degrees(np.arccos(cos_angle))
+        return angle
 
-# Creating track bar OPTIONAL
-#cv2.createTrackbar('h', 'HSV_TrackBar',0,179,nothing)
-#cv2.createTrackbar('s', 'HSV_TrackBar',0,255,nothing)
-#cv2.createTrackbar('v', 'HSV_TrackBar',0,255,nothing)
+    def FindDistance(A,B): # Function to find distance between two points in a list of lists
+        return np.sqrt(np.power((A[0][0]-B[0][0]),2) + np.power((A[0][1]-B[0][1]),2)) 
 
-areas=[]
-
-while(1):
+    cv2.namedWindow('HSV_TrackBar') # Creating a window for HSV track bars
+    h,s,v = 100,100,100 # Starting with 100's to prevent error while masking
+    #-----------------------------------------------------
+    # Creating track bar OPTIONAL
+    cv2.createTrackbar('h', 'HSV_TrackBar',0,179,nothing)
+    cv2.createTrackbar('s', 'HSV_TrackBar',0,255,nothing)
+    cv2.createTrackbar('v', 'HSV_TrackBar',0,255,nothing)
+    #----------------------------------------------------------
+    
     start_time = time.time() #Measure execution time 
     ret, frame = cap.read() #Capture frames from the camera
     blur = cv2.blur(frame,(3,3)) #Blur the image	
@@ -48,7 +44,7 @@ while(1):
     mask2 = cv2.inRange(hsv,np.array([2,50,50]),np.array([15,255,255])) #Create a binary image with where white will be skin colors and rest is black  
     kernel_square = np.ones((11,11),np.uint8) #Kernel matrices for morphological transformation    
     kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5)) #Perform morphological transformations to filter out the background noise  
-      
+    
     dilation = cv2.dilate(mask2,kernel_ellipse,iterations = 1) #Dilation increase skin color area
     erosion = cv2.erode(dilation,kernel_square,iterations = 1) #Erosion increase skin color area
     dilation2 = cv2.dilate(erosion,kernel_ellipse,iterations = 1)    
@@ -73,7 +69,7 @@ while(1):
     #Draw Contours
     #cv2.drawContours(frame, cnt, -1, (122,122,0), 3)
     #cv2.imshow('Dilation',median)            
-	 			    
+                    
     cnts = contours[ci] #Largest area contour
     hull = cv2.convexHull(cnts) #Find convex hull
     
@@ -110,13 +106,13 @@ while(1):
     
     sortedDefectsDistances = sorted(distanceBetweenDefectsToCenter) #Get an average of three shortest distances from finger webbing to center mass
     AverageDefectDistance = np.mean(sortedDefectsDistances[0:2])
- 
+
     finger = [] #Get fingertip points from contour hull. #If points are in proximity of 80 pixels, consider as a single point in the group
     for i in range(0,len(hull)-1):
         if (np.absolute(hull[i][0][0] - hull[i+1][0][0]) > 80  ) or ( np.absolute(hull[i][0][1] - hull[i+1][0][1]) > 80):
             if hull[i][0][1] <500 :
                 finger.append(hull[i][0])
-      
+    
     finger =  sorted(finger,key=lambda x: x[1]) #The fingertip points are 5 hull points with largest y coordinates
     fingers = finger[0:5]
     
@@ -132,81 +128,24 @@ while(1):
 
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
-    # --------------------------------------------------
-    # SIGNAL NORMALISATION
-    # min and max area found empirically
-    max_area=300000
-    min_area=32000
-    tone_range = max_area - min_area
-    areatone = (area - min_area ) / tone_range
 
-    #if areatone < 0.1:
-    #    print("rest")
-    if areatone < 0.2:
-        areatone = 440
-        note="A4 440HZ"
-    elif areatone >=0.2 and areatone < 0.4:
-        areatone = 523
-        note="C5 523Hz"
-    elif areatone >= 0.4 and areatone < 0.55:
-        areatone = 587
-        note="D5 587Hz"
-    elif areatone >= 0.55 and areatone < 0.7:
-        areatone = 659
-        note="C5 659Hz"
-    elif areatone >= 0.7 and areatone < 0.85:
-        areatone = 698
-        note="F5 698Hz"
-    elif areatone >= 0.85 and areatone < 1:
-        areatone = 784
-        note="G5 784Hz"
-    elif areatone >= 1:
-        areatone = 880
-        note="A5 880Hz"
-    else:
-        note=""
-
-    # Show tone and frequency
-    cv2.putText(frame,note,(100,100),font,2,(100,0,255),2)
 
     #---------------------------------------------------
     # MULTIPROC
-    def worker1(areatone):
-        return areatone     
-    #--------------------------------------------------
-        
     ##### Show final image ########
     cv2.imshow('Dilation',frame)
     ###############################
     
     #close the output video by pressing 'ESC'
     k = cv2.waitKey(5) & 0xFF
-    if k == 27:
-        break
 
-    # -------------------------------------------------
-    # SOUND: WORKER2
-    def worker2():
-        #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area)
-        print("the tone of the area is" , areatone, "Hz")
-        player = Player()
-        player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)
-        
-        # Play A4
-        player.play_wave(synthesizer.generate_constant_wave(areatone, 0.15))
-    #------------------------------------------------
+    #if k == 27:
+    #    break
 
-    # End of multiprocess tree
-    process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
-    process2 = multiprocessing.Process(target=worker2)
-
-    process1.start()
-    process2.start()
-    process1.join()
-    process2.join()
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    return area     
     #--------------------------------------------------
+        
 
-
-cap.release()
-cv2.destroyAllWindows()
