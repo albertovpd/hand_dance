@@ -6,31 +6,52 @@ import os
 manager = multiprocessing.Manager()
 shared_list_area = manager.list()
 
-from synthesizer import Player, Synthesizer, Waveform
+from synthesizer import Player, Synthesizer, Waveform #from src.music_from_hands import my_sound
 
-areas=[]
-notes=[]
-interval=[]
-# In this script I multiprocess a continuous output (the frame per second to play a music tone in function of the area of the hand processed)
 
-#Open Camera object
-cap = cv2.VideoCapture(0) 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) 
+# IN THIS SCRIPT I MULTIPROCESS THE CONTINUOUS OUTPUT OF THE GREEN SQUARE CAPTURING THE HAND
+
+cap = cv2.VideoCapture(0) #Open Camera object
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 
 
-while True:
-    
-    #Measure execution time
-    start_time = time.time()
+def Angle(v1,v2): # Function to find angle between two vectors 
+ dot = np.dot(v1,v2)
+ x_modulus = np.sqrt((v1*v1).sum())
+ y_modulus = np.sqrt((v2*v2).sum())
+ cos_angle = dot / x_modulus / y_modulus
+ angle = np.degrees(np.arccos(cos_angle))
+ return angle
 
+def FindDistance(A,B): # Function to find distance between two points in a list of lists
+ return np.sqrt(np.power((A[0][0]-B[0][0]),2) + np.power((A[0][1]-B[0][1]),2)) 
+
+cv2.namedWindow('HSV_TrackBar') # Creating a window for HSV track bars
+h,s,v = 100,100,100 # Starting with 100's to prevent error while masking
+
+# Creating track bar OPTIONAL
+def button(x):
+    pass
+cv2.createTrackbar('h', 'HSV_TrackBar',0,179,button)
+cv2.createTrackbar('s', 'HSV_TrackBar',0,255,button)
+cv2.createTrackbar('v', 'HSV_TrackBar',0,255,button)
+
+areas=[]
+
+while True:
+    if os.environ.get("BATERIA")=="0":
+        print("Sevilla")
+        break   
+    start_time = time.time() #Measure execution time 
     ret, frame = cap.read() #Capture frames from the camera
     blur = cv2.blur(frame,(3,3)) #Blur the image	
     hsv = cv2.cvtColor(blur,cv2.COLOR_BGR2HSV) #Convert to HSV color space
     mask2 = cv2.inRange(hsv,np.array([2,50,50]),np.array([15,255,255])) #Create a binary image with where white will be skin colors and rest is black  
     kernel_square = np.ones((11,11),np.uint8) #Kernel matrices for morphological transformation    
-    kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5)) #Perform morphological transformations to filter out the background noise   
+    kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5)) #Perform morphological transformations to filter out the background noise  
+      
     dilation = cv2.dilate(mask2,kernel_ellipse,iterations = 1) #Dilation increase skin color area
     erosion = cv2.erode(dilation,kernel_square,iterations = 1) #Erosion increase skin color area
     dilation2 = cv2.dilate(erosion,kernel_ellipse,iterations = 1)    
@@ -43,8 +64,7 @@ while True:
     ret,thresh = cv2.threshold(median,127,255,0)    
     
     contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Find contours of the filtered frame for python3 
-    
-    #Find Max contour area (Assume that hand is in the frame)
+    #Find Max contour area (Assume that hand is in the frame)---- AREA---CHECK IT OUT
     max_area=100
     ci=0	
     for i in range(len(contours)):
@@ -79,6 +99,7 @@ while True:
 
     cv2.circle(frame,centerMass,10,[100,0,255],2)  #Draw center mass
     font = cv2.FONT_HERSHEY_SIMPLEX
+    #cv2.putText(frame,'o'  ,tuple(centerMass),font,2,(100,0,255),2)     
 
     distanceBetweenDefectsToCenter = [] #Distance from each finger defect(finger webbing) to the center mass
     for i in range(0,len(FarDefect)):
@@ -86,8 +107,24 @@ while True:
         centerMass = np.array(centerMass)
         distance = np.sqrt(np.power(x[0]-centerMass[0],2)+np.power(x[1]-centerMass[1],2))
         distanceBetweenDefectsToCenter.append(distance)
-
+    
+    sortedDefectsDistances = sorted(distanceBetweenDefectsToCenter) #Get an average of three shortest distances from finger webbing to center mass
+    AverageDefectDistance = np.mean(sortedDefectsDistances[0:2])
  
+    finger = [] #Get fingertip points from contour hull. #If points are in proximity of 80 pixels, consider as a single point in the group
+    for i in range(0,len(hull)-1):
+        if (np.absolute(hull[i][0][0] - hull[i+1][0][0]) > 80  ) or ( np.absolute(hull[i][0][1] - hull[i+1][0][1]) > 80):
+            if hull[i][0][1] <500 :
+                finger.append(hull[i][0])
+      
+    finger =  sorted(finger,key=lambda x: x[1]) #The fingertip points are 5 hull points with largest y coordinates
+    fingers = finger[0:5]
+    
+    fingerDistance = [] #Calculate distance of each finger tip to the center mass
+    for i in range(0,len(fingers)):
+        distance = np.sqrt(np.power(fingers[i][0]-centerMass[0],2)+np.power(fingers[i][1]-centerMass[0],2))
+        fingerDistance.append(distance)
+    
     #----------------------------------------------------
     # AREA  
     x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
@@ -103,50 +140,46 @@ while True:
     tone_range = max_area - min_area
     areatone = (area - min_area ) / tone_range
 
-    if areatone >= 0.2 and areatone < 0.4:
+    #if areatone < 0.1:
+    #    print("rest")
+    if areatone > 0.2 and areatone < 0.4:
         areatone = 440
-        note="A4"
-        hz= "440HZ"
+        note="A4 440HZ"
     elif areatone >=0.4 and areatone < 0.6:
         areatone = 523
-        note="C5" 
-        hz="523Hz"
+        note="C5 523Hz"
     elif areatone >= 0.6 and areatone < 0.7:
         areatone = 587
-        note="D5" 
-        hz="587Hz"
+        note="D5 587Hz"
     elif areatone >= 0.7 and areatone < 0.8:
         areatone = 659
-        note="C5" 
-        hz="659Hz"
+        note="C5 659Hz"
     elif areatone >= 0.8 and areatone < 0.9:
         areatone = 698
-        note="F5" 
-        hz="698Hz"
+        note="F5 698Hz"
     elif areatone >= 0.9 and areatone < 1:
         areatone = 784
-        note="G5"
-        hz= "784Hz"
+        note="G5 784Hz"
     elif areatone >= 1:
         areatone = 880
-        note="A5" 
-        hz="880Hz"
+        note="A5 880Hz"
     else:
-        hz=""
-        note="Silent"
-    notes.append(note)   
-    
-    #----------- Show tone and frequency-------------
-    cv2.putText(frame, "       {}".format(note)  ,tuple(centerMass),font,1,(255,255,255),2)
-    cv2.putText(frame, "{}".format(hz)  ,tuple(centerMass),font,1,(0,255,0),2)
+        note="Rest"
+
+    # Show tone and frequency
+    cv2.putText(frame, " <-- {}".format(note)  ,tuple(centerMass),font,1,(255,255,255),2)
 
     #---------------------------------------------------
-    
+    # MULTIPROC
+    #def worker1(areatone):
+    #    return areatone     
+    #--------------------------------------------------
+        
     ##### Show final image ########
     cv2.imshow('Dilation',frame)
     ###############################
     
-    #-----close the output video by pressing 'ESC' -------------
+    #close the output video by pressing 'ESC'
     k = cv2.waitKey(5) & 0xFF
     if k == 27:  # este if va con el while true
         break
@@ -154,25 +187,34 @@ while True:
     # -------------------------------------------------
     # SOUND: WORKER2
 
-    def worker(): 
+    def worker():
+        #print("multiprocess of hand area from worker1 to worker2,MADAFAKA, which is ", area)
+        #print("the tone of the area is" , areatone, "Hz")
         player = Player()
         player.open_stream()
         synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
         # Play A4
         return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))
 
+    #------------------------------------------------
+        # End of multiprocess tree
+    #process1 = multiprocessing.Process(target=worker1, args=[shared_list_area])
     process = multiprocessing.Process(target=worker)
+
+    #process1.start()
     process.start()
+    #process1.join()
     process.join()
     #--------------------------------------------------
-# notes, interval
-for e in range(len(notes)):
-    interval.append(e)
+
+# def foo(n):
+#     for i in range(10000 * n):
+        
+#         time.sleep(1)
+
 print("")
-print("Vargas campeón, tus notas son:", "\n", notes, "\n interval is", interval)
 print("This script is more powerful than ALSA drivers. Ignore warnings")
 print("Process done")
 print("Please, cntrl + C access the terminal")
-
 cap.release()
 cv2.destroyAllWindows()
