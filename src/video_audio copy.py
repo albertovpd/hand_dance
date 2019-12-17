@@ -6,15 +6,15 @@ import os
 manager = multiprocessing.Manager()
 shared_list_area = manager.list()
 
-from synthesizer import Player, Synthesizer, Waveform #from src.music_from_hands import my_sound
+from synthesizer import Player, Synthesizer, Waveform
 
 
-# IN THIS SCRIPT I MULTIPROCESS THE CONTINUOUS OUTPUT OF THE GREEN SQUARE CAPTURING THE HAND
+# In this script I multiprocess a continuous output (the frame per second to play a music tone in function of the area of the hand processed)
 
-cap = cv2.VideoCapture(0) #Open Camera object
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) #Decrease frame size and crop frame width
+#Open Camera object
+cap = cv2.VideoCapture(0) 
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) 
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
-
 
 
 def Angle(v1,v2): # Function to find angle between two vectors 

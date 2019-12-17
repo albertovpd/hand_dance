@@ -1,4 +1,75 @@
-notes=[1,2,3,4,5,4,4,4,5,3,6,6,5,4,3,3,4,4,55,55]
-cosas=[]
-for e in range(len(notes)):
-    cosas.append(e)
+from synthesizer import Player, Synthesizer, Waveform
+
+
+player = Player()
+player.open_stream()
+synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
+# Play A4
+sonidos=[
+    690,690,0,0,    
+    520,520,0,
+    690,0,690,0,
+    870,
+    916,0,
+    870, 0,
+    776,776,0,0,
+    520,520,0,
+    776,0,776,0,
+    870,
+    776,776,0,0,
+    690,690,0,0,
+    590,590,0,
+    690,0,690,0,
+    870,
+    916,0,
+    870,0,
+    776,776,0,0,
+    520,520,0,
+    776,0,776,0,
+    870,
+    776,776,776] 
+for e in sonidos:
+    player.play_wave(synthesizer.generate_constant_wave(e, 0.14))
+
+#  COMPARAR CON LA CANCIÓN DE CAMELA
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+#labels = list(set(sonidos))
+men_means = [20, 34, 30, 35, 27]
+women_means = [25, 32, 34, 20, 25]
+
+x = np.arange(len(labels))  # the label locations
+width = 0.35  # the width of the bars
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(x - width/2, men_means, width, label='Men')
+rects2 = ax.bar(x + width/2, women_means, width, label='Women')
+
+# Add some text for labels, title and custom x-axis tick labels, etc.
+ax.set_ylabel('Scores')
+ax.set_title('Scores by group and gender')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+
+def autolabel(rects):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
+
+autolabel(rects1)
+autolabel(rects2)
+
+fig.tight_layout()
+
+plt.show()

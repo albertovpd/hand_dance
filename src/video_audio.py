@@ -6,6 +6,8 @@ import os
 manager = multiprocessing.Manager()
 shared_list_area = manager.list()
 
+import matplotlib.pyplot as plt
+
 from synthesizer import Player, Synthesizer, Waveform
 
 areas=[]
@@ -19,9 +21,9 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 
-
+count=200
 while True:
-    
+    count+=1
     #Measure execution time
     start_time = time.time()
 
@@ -153,13 +155,15 @@ while True:
 
     # -------------------------------------------------
     # SOUND: WORKER2
-
-    def worker(): 
-        player = Player()
-        player.open_stream()
-        synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
-        # Play A4
-        return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))
+    if count>=3 :
+        def worker(): 
+            player = Player()
+            player.open_stream()
+            synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
+            # Play A4
+            return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))
+        
+        count=0
 
     process = multiprocessing.Process(target=worker)
     process.start()
@@ -169,10 +173,16 @@ while True:
 for e in range(len(notes)):
     interval.append(e)
 print("")
-print("Vargas campeón, tus notas son:", "\n", notes, "\n interval is", interval)
-print("This script is more powerful than ALSA drivers. Ignore warnings")
+#print("Vargas campeón, tus notas son:", "\n", notes, "\n interval is", interval)
+#print("This script is more powerful than ALSA drivers. Ignore warnings")
 print("Process done")
 print("Please, cntrl + C access the terminal")
+plt.plot(interval, notes, "s")
+labels=set(notes)
+plt.ylabel('Notes')
+plt.xlabel('Frame number')
+plt.show()
+
 
 cap.release()
 cv2.destroyAllWindows()
