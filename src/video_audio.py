@@ -126,7 +126,7 @@ while(1):
     # AREA  
     x,y,w,h = cv2.boundingRect(cnts) #Print bounding rectangle
     area=w*h
-    #print(area)
+    print(area)
     img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
     cv2.drawContours(frame,[hull],-1,(255,255,255),2)
     # --------------------------------------------------
@@ -204,7 +204,11 @@ while(1):
     process2.join()
     #--------------------------------------------------
 
+# def foo(n):
+#     for i in range(10000 * n):
+        
+#         time.sleep(1)
 
-
+# time.sleep(10)
 cap.release()
 cv2.destroyAllWindows()
