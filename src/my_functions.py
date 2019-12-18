@@ -46,6 +46,7 @@ def plotting_notes(notes):
     labels=set(notes)
     plt.ylabel('Notes')
     plt.xlabel('Frame number')
+    plt.savefig('../output/music_report.pdf')  
     return plt.show()
 
 def init_text():

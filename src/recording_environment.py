@@ -2,9 +2,7 @@ import pyaudio
 import wave
 
 print("RECORDING ENGAGED")
-def recording_all():
-    # This code belongs to:
-    # https://gist.github.com/mabdrabo/8678538        
+def recording_all():       
     FORMAT = pyaudio.paInt16
     CHANNELS = 2
     RATE = 44100

@@ -109,14 +109,13 @@ def handsgame():
                 synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
                 return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))    
         count=0      
-        
+
         process = multiprocessing.Process(target=worker)
         process.start()
         process.join()  
         
         # show tone and frequency
-        cv2.putText(frame, "        {}".format(note)  ,tuple(centerMass),font,1,(255,255,255),2)
-        cv2.putText(frame, "{} Hz".format(areatone)  ,tuple(centerMass),font,1,(0,255,0),2)
+        cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
         # final image
         cv2.imshow('Dilation',frame)        
@@ -129,11 +128,12 @@ def handsgame():
 
 handsgame()
     #---------- here ends audio/video -------------
+
 print("-----42-----")
 print("Game finished. Working on your report")
 
-plotting_notes(notes) # obvious
-print("")
+# Plotting notes. Sending mail.
+plotting_notes(notes) 
 print("Please, cntrl + C to access the terminal")
 
 
