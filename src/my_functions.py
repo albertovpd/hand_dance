@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import pyaudio
+import wave
 
 def transforming_to_tones(area):
 
@@ -44,3 +46,40 @@ def plotting_notes(notes):
     plt.ylabel('Notes')
     plt.xlabel('Frame number')
     return plt.show()
+
+def recording_all():
+    # This code belongs to:
+    # https://gist.github.com/mabdrabo/8678538        
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 2
+    RATE = 44100
+    CHUNK = 1024
+    RECORD_SECONDS = 2
+    WAVE_OUTPUT_FILENAME = "./output/song_and_environment.wav"
+    
+    audio = pyaudio.PyAudio()
+    
+    # start Recording
+    stream = audio.open(format=FORMAT, channels=CHANNELS,
+                    rate=RATE, input=True,
+                    frames_per_buffer=CHUNK)
+    print ("Recording...")
+    frames = []
+    
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+    print ("Finished recording")
+    
+    
+    # stop Recording
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+    
+    waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+    waveFile.setnchannels(CHANNELS)
+    waveFile.setsampwidth(audio.get_sample_size(FORMAT))
+    waveFile.setframerate(RATE)
+    waveFile.writeframes(b''.join(frames))
+    waveFile.close()

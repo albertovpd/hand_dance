@@ -102,11 +102,13 @@ def handsgame():
         notes.append(note)
 
         # multiprocess. sound
-        def worker(): 
-            player = Player()
-            player.open_stream()
-            synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
-            return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))    
+        if count>=5: #to catch 1 of 5 frames 
+            def worker(): 
+                player = Player()
+                player.open_stream()
+                synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
+                return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))    
+        count=0      
         
         process = multiprocessing.Process(target=worker)
         process.start()
