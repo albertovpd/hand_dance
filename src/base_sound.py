@@ -1,6 +1,7 @@
 import simpleaudio as sa
 import os
 
+print("BASE SOUND ENGAGED")
 filename = './input/pokemon.wav'
 wave_obj = sa.WaveObject.from_wave_file(filename)
 play_obj = wave_obj.play()
