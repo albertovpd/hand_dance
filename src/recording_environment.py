@@ -10,7 +10,7 @@ def recording_all():
     RATE = 44100
     CHUNK = 1024
     RECORD_SECONDS = 30
-    WAVE_OUTPUT_FILENAME = "output/song_and_environment.wav"
+    WAVE_OUTPUT_FILENAME = "../output/song_and_environment.wav"
     
     audio = pyaudio.PyAudio()
     
@@ -39,7 +39,7 @@ def recording_all():
     print("RECORDING FINISHED")
 recording_all()
 
-# record video and mix all 
+# record video and mix all  
 # import cv2
 
 # if __name__ == "__main__":

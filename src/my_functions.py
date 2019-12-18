@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 import pyaudio
 import wave
 
@@ -47,39 +48,14 @@ def plotting_notes(notes):
     plt.xlabel('Frame number')
     return plt.show()
 
-def recording_all():
-    # This code belongs to:
-    # https://gist.github.com/mabdrabo/8678538        
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 2
-    RATE = 44100
-    CHUNK = 1024
-    RECORD_SECONDS = 2
-    WAVE_OUTPUT_FILENAME = "./output/song_and_environment.wav"
-    
-    audio = pyaudio.PyAudio()
-    
-    # start Recording
-    stream = audio.open(format=FORMAT, channels=CHANNELS,
-                    rate=RATE, input=True,
-                    frames_per_buffer=CHUNK)
-    print ("Recording...")
-    frames = []
-    
-    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
-        frames.append(data)
-    print ("Finished recording")
-    
-    
-    # stop Recording
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
-    
-    waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-    waveFile.setnchannels(CHANNELS)
-    waveFile.setsampwidth(audio.get_sample_size(FORMAT))
-    waveFile.setframerate(RATE)
-    waveFile.writeframes(b''.join(frames))
-    waveFile.close()
+def init_text():
+    print('''
+        This is a linux shell multiprocess combining a background music, a real-time image-capturing and a recording script. The second one is the father of another child subprocess which receives the area captured each frame and send a tone proportional to the area. \n
+        The father captures an area in a frame and stop, the child process play a sound, the father captures another frame and the cycle starts again. \n 
+        This is a python multiprocess under a parallel linux shell multiprocess.
+        \n 
+        MODES: \n
+        - test [t] => git it a try \n
+        - game [g] => play some funky tunes
+        \n''')
+   
