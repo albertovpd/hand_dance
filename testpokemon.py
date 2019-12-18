@@ -22,6 +22,7 @@ cantar2=[
     ] 
 cantar2=sorted(cantar2)
 print(set(cantar2))
+# {355,440,478,532,590,618,700,776,812, 912,964, 1074, 1202}
 
 # for e in cantar:
 #     player.play_wave(synthesizer.generate_constant_wave(e, 0.5))
