@@ -55,6 +55,7 @@ def plotting_notes(notes):
     plt.savefig('../output/music_report.pdf')  
     return plt.show()
 
+
 def accuracy_to_mama(notes):
     '''
     This scrip tells you how good are you playing "when mama ist at home.
@@ -64,3 +65,6 @@ def accuracy_to_mama(notes):
         0,0,0,0,0,342,0,500,676,0,676,0,676,0,676,0,676,0,500, 0,542,0,500,0,412,0,380,0,342,0]
    
 
+    print(len(mama_isnt_home))
+    return
+accuracy_to_mama(2)
