@@ -45,7 +45,9 @@ def plotting_notes(notes):
     plt.plot(interval, notes, "s")
     labels=set(notes)
     plt.ylabel('Notes')
-    plt.xlabel('Frame number')
+    plt.xlabel('''Frame number \n
+    You resemblance with the original song''')
+    #ax.set_xlabel('time [s] \n This was a long experiment')
     plt.savefig('../output/music_report.pdf')  
     return plt.show()
 
@@ -60,3 +62,4 @@ def init_text():
         - game [g] => play some funky tunes
         \n''')
    
+

@@ -123,6 +123,15 @@ def handsgame():
         k = cv2.waitKey(5) & 0xFF #close the output video by pressing 'ESC'
         if k == 27:
             break
+
+    # def closing_cameta_in_time(counttoclose=0):
+    #     counttoclose+=1
+    #     print(counttoclose)
+    #     if counttoclose == 15:
+    #         cap.release()
+    
+    # counttoclose = 0
+
     cap.release()
     cv2.destroyAllWindows()
 
@@ -134,6 +143,9 @@ print("Game finished. Working on your report")
 
 # Plotting notes. Sending mail.
 plotting_notes(notes) 
+
+from fpdf import FPDF
+pdf.cell(75, 10, "A Tabular and Graphical Report of Professor Criss's Ratings by Users Charles and Mike", 0, 2, 'C')
 print("Please, cntrl + C to access the terminal")
 
 

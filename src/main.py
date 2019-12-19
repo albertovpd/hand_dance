@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import argparse
-from my_functions import init_text
+#from my_functions import init_text
 
 
 def program_config(): # currently unfinished
@@ -13,22 +13,24 @@ def program_config(): # currently unfinished
     under 3 parallel linux shell multiprocesses.''')
     parser.add_argument('-a',
                         help='Select: [t / g]  (t = test, give it a try; g = game, to play some funky tunes.)',
+                        default="t"
                         )                        
     args = parser.parse_args()
     
-    return 
+    return args
 
 def main():
-    '''Hola'''
-    #config=program_config()
-    init_text()
-    a=input("Please, select mode [t/g]: ")
-    if a=="t":
+    
+    config=program_config()
+    if config.a=='t':
+
         print("Starting test")
-        subprocess.run("python3 video_audio.py & python3 base_sound.py", shell=True)   
-    elif a=="g":
-        print("Starting game")
-        subprocess.run("python3 video_audio.py & python3 base_sound.py & python3 recording_environment.py", shell=True)    
+        subprocess.run("python3 video_audio.py & python3 base_sound.py", shell=True)
+
+    elif config.a=="g":
+         print("Starting game")
+         subprocess.run("python3 video_audio.py & python3 base_sound.py & python3 recording_environment.py", shell=True)
+
 
 if __name__=="__main__":
     main()
