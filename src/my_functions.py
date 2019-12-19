@@ -76,5 +76,6 @@ def plotting_notes(notes):
     labels=set(notes)
     plt.ylabel('Notes')
     plt.xlabel('Frames \n Your accuracy is more or less {}%. Keep working on it'.format(accuracy_song))
+    plt.savefig("../output/music_report.pdf")
     return plt.show()
 

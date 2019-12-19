@@ -8,6 +8,7 @@ import time
 from synthesizer import Player, Synthesizer, Waveform
 
 from my_functions import transforming_to_tones, plotting_notes
+from emailing import hand_solo_mail
 
 notes=[] # to plot notes per frame in the end
 print("VIDEO-AUDIO ENGAGED")
@@ -144,7 +145,9 @@ print("Game finished. Working on your report")
 # Plotting notes. Sending mail.
 plotting_notes(notes)
 
-print("Please, cntrl + C to access the terminal")
+# email with results
+hand_solo_mail()
 
+print("Please, cntrl + C to access the terminal")
 
 
