@@ -144,8 +144,6 @@ print("Game finished. Working on your report")
 # Plotting notes. Sending mail.
 plotting_notes(notes) 
 
-from fpdf import FPDF
-pdf.cell(75, 10, "A Tabular and Graphical Report of Professor Criss's Ratings by Users Charles and Mike", 0, 2, 'C')
 print("Please, cntrl + C to access the terminal")
 
 

@@ -11,28 +11,32 @@ def transforming_to_tones(area):
     min_area=32000
     tone_range = max_area - min_area
     areatone = (area - min_area ) / tone_range
+#{0,, , ,, , ,, }
 
-    if areatone > 0.2 and areatone < 0.4:
-        areatone = 440
-        note="A4"
-    elif areatone >=0.4 and areatone < 0.6:
-        areatone = 523
-        note="C5"
-    elif areatone >= 0.6 and areatone < 0.7:
-        areatone = 587
-        note="D5"
-    elif areatone >= 0.7 and areatone < 0.8:
-        areatone = 659
-        note="C5"
+    if areatone > 0.2 and areatone < 0.32:
+        areatone = 342
+        note="342"
+    elif areatone >=0.32 and areatone < 0.44:
+        areatone = 380
+        note="C5380"
+    elif areatone >= 0.44 and areatone < 0.56:
+        areatone = 412
+        note="D5412"
+    elif areatone >= 0.56 and areatone < 0.68:
+        areatone = 500 
+        note="500"
+    elif areatone >= 0.68 and areatone < 0.80:
+        areatone = 542 
+        note="542"
     elif areatone >= 0.8 and areatone < 0.9:
-        areatone = 698
-        note="F5"
+        areatone = 412
+        note="412"    
     elif areatone >= 0.9 and areatone < 1:
-        areatone = 784
-        note="G5"
+        areatone = 612
+        note="612"
     elif areatone >= 1:
-        areatone = 880
-        note="A5"
+        areatone = 676
+        note="676"
     else:
         note="Rest"
         areatone=0
@@ -51,15 +55,12 @@ def plotting_notes(notes):
     plt.savefig('../output/music_report.pdf')  
     return plt.show()
 
-def init_text():
-    print('''
-        This is a linux shell multiprocess combining a background music, a real-time image-capturing and a recording script. The second one is the father of another child subprocess which receives the area captured each frame and send a tone proportional to the area. \n
-        The father captures an area in a frame and stop, the child process play a sound, the father captures another frame and the cycle starts again. \n 
-        This is a python multiprocess under a parallel linux shell multiprocess.
-        \n 
-        MODES: \n
-        - test [t] => git it a try \n
-        - game [g] => play some funky tunes
-        \n''')
+def accuracy_to_mama(notes):
+    '''
+    This scrip tells you how good are you playing "when mama ist at home.
+    https://www.youtube.com/watch?v=CgHW02YF50s
+    '''
+    mama_isnt_home= [342,0,500,676,0,676,0,676,0,676,0,676,0,500, 0,542,0,612,0,672,0,542,0,500,0,0,
+        0,0,0,0,0,342,0,500,676,0,676,0,676,0,676,0,676,0,500, 0,542,0,500,0,412,0,380,0,342,0]
    
 
