@@ -18,7 +18,7 @@ def handsgame():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 
-    count=300 # to give some space
+    count=500 # to give some space
     while True:
         count+=1
         #Measure execution time
@@ -142,7 +142,7 @@ print("-----42-----")
 print("Game finished. Working on your report")
 
 # Plotting notes. Sending mail.
-plotting_notes(notes) 
+plotting_notes(notes)
 
 print("Please, cntrl + C to access the terminal")
 
