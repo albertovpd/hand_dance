@@ -1,6 +1,8 @@
-Real-time image-capturing feeding a subprocess that emits sound proportional to the output area of the main script.
+#### Real-time image-capturing feeding a subprocess that emits sound proportional to the output area of the main script.
 
-# Final project at Ironhack Madrid: An effective introduction to multiprocess libraries and tools in Pyhon and Linux Shell.
+# Final project at Ironhack Madrid: 
+
+## An effective introduction to multiprocess libraries and tools in Pyhon and Linux Shell.
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-adudio_multiprocess/master/output/process.png "process")
 
@@ -9,6 +11,8 @@ My name is Alberto, I am Physicist and from my point of view, as well as the kno
 For this reason, I invested the week we had for deliver our final project in learning how to run parallel scripts, how to write synchronized and asynchronized scripts and how to feed a process with the output of other that is not "completely finished" yet, in a programming language, Python, which works performing just one single task at time.
 
 From all I learn about Multiprocessing, Async IO and integrated Python tools, my resulting scripts are the simplest I could find for the task I needed to solve.
+
+-------------------------------
 
 # The project:
 
