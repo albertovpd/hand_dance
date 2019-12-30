@@ -4,7 +4,7 @@
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-adudio_multiprocess/master/output/process.png "process")
 
-My name is Alberto, I am Physicist and from my point of view, as well as the known work with data, a Data Scientist must know how to take the best of its software and hardware, minimizing deadtime between processes and maximizing the queue work of scripts.
+My name is Alberto, I am Physicist and from my point of view, as well as the known work with data, a Data Scientist must know how to take the best of its software and hardware, minimizing deadtime between processes and the queue of processes in scripts.
 
 For this reason, I invested the week we had for deliver our final project in learning how to run parallel scripts, how to write synchronized and asynchronized scripts and how to feed a process with the output of other that is not "completely finished" yet, in a programming language, Python, which works performing just one single task at time.
 
