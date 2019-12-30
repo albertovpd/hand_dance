@@ -10,6 +10,8 @@ from synthesizer import Player, Synthesizer, Waveform
 from my_functions import transforming_to_tones, plotting_notes
 from emailing import hand_solo_mail
 
+import pickle
+
 notes=[] # to plot notes per frame in the end
 print("VIDEO-AUDIO ENGAGED")
 def handsgame():    
@@ -19,7 +21,7 @@ def handsgame():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 
-    count=500 # to give some space
+    count=0 # to give some space
     while True:
         count+=1
         #Measure execution time
@@ -93,17 +95,28 @@ def handsgame():
         #Print bounding rectangle
         x,y,w,h = cv2.boundingRect(cnts) 
         area=w*h
-        #print(area)
+        if count==2:
+            #print(area)
+            count=0
+            with open('outfile', 'wb') as fp:
+                pickle.dump(area, fp)
+        #        
+
         img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
         cv2.drawContours(frame,[hull],-1,(255,255,255),2)
         # --------------------------------------------------
 
         # turning area size intro notes
-        note,areatone = transforming_to_tones(area)
-        notes.append(note)
+        #note,areatone = transforming_to_tones(area)
+
+
+        
+        # while True:
+        #     pickle.dump(areatone,"save.p","wb")
+        #notes.append(note)
 
         # multiprocess. sound
-        if count>=5: #to catch 1 of 5 frames 
+        '''if count>=5: #to catch 1 of 5 frames 
             def worker(): 
                 player = Player()
                 player.open_stream()
@@ -113,10 +126,10 @@ def handsgame():
 
         process = multiprocessing.Process(target=worker)
         process.start()
-        process.join()  
+        process.join()'''  
         
         # show tone and frequency
-        cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
+        #cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
         # final image
         cv2.imshow('Dilation',frame)        
@@ -143,10 +156,10 @@ print("-----42-----")
 print("Game finished. Working on your report")
 
 # Plotting notes. Sending mail.
-plotting_notes(notes)
+#plotting_notes(notes)
 
 # email with results
-hand_solo_mail()
+#hand_solo_mail()
 
 print("Please, cntrl + C to access the terminal")
 

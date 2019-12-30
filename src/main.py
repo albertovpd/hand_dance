@@ -11,8 +11,8 @@ def program_config(): # currently unfinished
     the father captures another frame and the cycle starts again. This is a python multiprocess 
     under 3 parallel linux shell multiprocesses.''')
     parser.add_argument('-a',
-                        help='Select: [t / g]  (t = test, give it a try; g = game, to play some funky tunes.)',
-                        default="g"
+                        help='Select: [u / t / g]  (u = upgrading script; t = test, give it a try; g = game, to play some funky tunes.)',
+                        default="u"
                         )                        
     args = parser.parse_args()
     
@@ -29,6 +29,10 @@ def main():
     elif config.a=="g":        
         print("Starting game")
         subprocess.run("python3 video_audio.py & python3 base_sound.py & python3 recording_environment.py", shell=True)
+
+    elif config.a=="u":
+        print("Upgrading script")
+        subprocess.run("python3 video_audio.py & python3 test.py", shell=True)
 
 if __name__=="__main__":
     main()
