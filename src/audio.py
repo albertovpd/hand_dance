@@ -2,20 +2,35 @@ import pickle
 from synthesizer import Player, Synthesizer, Waveform
 import multiprocessing
 from my_functions import transforming_to_tones
+import time
 
-tones=[]
 
-while True:
+
+timeout = 50   # [seconds]
+timeout_start = time.time()
+
+while time.time() < timeout_start + timeout:
+    test=0
     try:
         with open ('outfile', 'rb') as fp:
             area_out = pickle.load(fp)
-        print(area_out)
-    except:
-        print(0)
+        note, areatone = transforming_to_tones(area_out)
+        print(note, areatone, "patata")
+        if time.time() > timeout:
+            break
+    # except:
+    #     print(0)
+    
+    
+    
 
-    note,areatone = transforming_to_tones(area_out)
-
-    print(areatone)
+#     import time
+# timeout = time.time() + 60*5   # 5 minutes from now
+# while True:
+#     test = 0
+#     if test == 5 or time.time() > timeout:
+#         break
+#     test = test - 1
 
     # ver si lagea ahora o qué
     # tones.append(areatone)

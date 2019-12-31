@@ -1,29 +1,35 @@
 import pickle
 from synthesizer import Player, Synthesizer, Waveform
 import multiprocessing
+from my_functions import transforming_to_tones
+import time
 
+timeout = time.time() + 5 #seconds
+print("Timer engaged")
 while True:
+
+    # timer to break the loop
+    if time.time() > timeout:
+        print("Timer finished")
+        break
+
     try:
         with open ('outfile', 'rb') as fp:
             area_out = pickle.load(fp)
-        print(area_out)
+
+        #print(area_out, "patata")
+        note, areatone = transforming_to_tones(area_out)
+        print(areatone, note)
     except:
         print(0)
 
-        
-# count=0
+
+
+
+
+# import time
+# timeout = time.time() + 60*5   # 5 minutes from now
 # while True:
-#     count=0
-
-#     if count>=5: #to catch 1 of 5 frames 
-        
-#         def worker1(): 
-            
-#             area = pickle.load( open( "save.p", "rb" ) )
-            
-#             return area 
-#     count=0
-
-#     process = multiprocessing.Process(target=worker1)
-#     process.start()
-#     process.join()
+#     test = 0
+#     if test == 5 or time.time() > timeout:
+#         break

@@ -106,29 +106,8 @@ def handsgame():
         cv2.drawContours(frame,[hull],-1,(255,255,255),2)
         # --------------------------------------------------
 
-        # turning area size intro notes
-        #note,areatone = transforming_to_tones(area)
-
-
-        
-        # while True:
-        #     pickle.dump(areatone,"save.p","wb")
-        #notes.append(note)
-
-        # multiprocess. sound
-        '''if count>=5: #to catch 1 of 5 frames 
-            def worker(): 
-                player = Player()
-                player.open_stream()
-                synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)        
-                return player.play_wave(synthesizer.generate_constant_wave(areatone, 0.14))    
-        count=0      
-
-        process = multiprocessing.Process(target=worker)
-        process.start()
-        process.join()'''  
-        
         # show tone and frequency
+        #note,areatone = transforming_to_tones(area)  
         #cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
         # final image
