@@ -4,8 +4,13 @@ import multiprocessing
 from my_functions import transforming_to_tones
 import time
 
-timeout = time.time() + 5 #seconds
+timeout = time.time() + 10 #seconds
 print("Timer engaged")
+
+player = Player()
+player.open_stream()
+synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2=False)
+
 while True:
 
     # timer to break the loop
@@ -13,21 +18,19 @@ while True:
         print("Timer finished")
         break
 
+    # try/except to avoid errors while writing and reading at the same time
     try:
         with open ('outfile', 'rb') as fp:
             area_out = pickle.load(fp)
-
-        #print(area_out, "patata")
-        note, areatone = transforming_to_tones(area_out)
-        print(areatone, note)
     except:
-        print(0)
+        print("Hand frame casualty")
 
-
-
-
-
-# import time
+    areatone,note = transforming_to_tones(area_out)
+    player.play_wave(synthesizer.generate_constant_wave(areatone, 0.05))
+    
+    
+    
+    # import time
 # timeout = time.time() + 60*5   # 5 minutes from now
 # while True:
 #     test = 0
