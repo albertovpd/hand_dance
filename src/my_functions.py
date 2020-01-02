@@ -11,31 +11,32 @@ def transforming_to_tones(area):
     tone_range = max_area - min_area
     areatone = (area - min_area ) / tone_range
 
-    if areatone > 0.2 and areatone < 0.32:
-        areatone = 293.66 
+    if areatone >= 0.1 and areatone < 0.25:
+        areatone = 290 
         note="D4"
-    elif areatone >=0.32 and areatone < 0.44:
+    elif areatone >=0.25 and areatone < 0.4:
         areatone = 329.63
         note="E4"
-    elif areatone >= 0.44 and areatone < 0.56:
+    elif areatone >= 0.4 and areatone < 0.55:
         areatone = 349.23
         note="F4"
-    elif areatone >= 0.56 and areatone < 0.68:
+    elif areatone >= 0.55 and areatone < 0.7:
         areatone = 392.00 
         note="G4"
-    elif areatone >= 0.68 and areatone < 0.80:
+    elif areatone >= 0.7 and areatone < 0.85:
         areatone = 440.00
         note="A4"  
-    elif areatone >= 0.8 and areatone < 1:
+    elif areatone >= 0.85 and areatone < 1:
         areatone = 493.88
         note="B4"
     elif areatone >= 1: #you can create an area greater than describing above
         areatone = 523.25
         note="C5"
     else:
-        note="Rest"
         areatone=0
-    return note, areatone
+        note="Rest"
+        
+    return areatone,note
 
 #mamahomething
     # if areatone > 0.2 and areatone < 0.32:

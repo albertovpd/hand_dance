@@ -100,6 +100,7 @@ def handsgame():
             count=0
             with open('outfile', 'wb') as fp:
                 pickle.dump(area, fp)
+                #print(area)
         #        
 
         img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
@@ -107,8 +108,8 @@ def handsgame():
         # --------------------------------------------------
 
         # show tone and frequency
-        #note,areatone = transforming_to_tones(area)  
-        #cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
+        areatone, note = transforming_to_tones(area)  
+        cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
         # final image
         cv2.imshow('Dilation',frame)        
