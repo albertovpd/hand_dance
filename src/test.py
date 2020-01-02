@@ -22,11 +22,12 @@ while True:
     try:
         with open ('outfile', 'rb') as fp:
             area_out = pickle.load(fp)
+        areatone,note = transforming_to_tones(area_out)
+        player.play_wave(synthesizer.generate_constant_wave(areatone, 0.05))
     except:
         print("Hand frame casualty")
 
-    areatone,note = transforming_to_tones(area_out)
-    player.play_wave(synthesizer.generate_constant_wave(areatone, 0.05))
+   
     
     
     
