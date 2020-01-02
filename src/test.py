@@ -3,8 +3,9 @@ from synthesizer import Player, Synthesizer, Waveform
 import multiprocessing
 from my_functions import transforming_to_tones
 import time
+from music21 import *
 
-timeout = time.time() + 20 #seconds
+timeout = time.time() + 5 #seconds
 print("Timer engaged")
 
 player = Player()
@@ -18,14 +19,15 @@ while True:
     if time.time() > timeout:
         print("Timer finished")
         break
-
+    notes=[]
     # try/except to avoid errors while writing and reading at the same time
     try:
         with open ('outfile', 'rb') as fp:
             area_out = pickle.load(fp)
         
         areatone,note = transforming_to_tones(area_out)
-        print(areatone)
+        print("freq played: ",areatone, note)
+        notes.append(note)
 
         
         player.play_wave(synthesizer.generate_constant_wave(areatone, 0.05))
@@ -33,8 +35,10 @@ while True:
     except:
         print("Hand frame casualty")
 
-   
-    
+
+#ensenar=notes.parse("tinynotation: 3/4 c4 d8 f g16 a g f#").show()
+#verdi = corpus.parse('verdi/laDonnaEMobile')
+#verdi.measures(1, 10).show()
     
     
     # import time
