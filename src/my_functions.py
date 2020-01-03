@@ -5,38 +5,125 @@ import wave
 
 def transforming_to_tones(area):
 
-    # SIGNAL NORMALISATION. min and max area found empirically
+    # SIGNAL NORMALISATION. min and max area found
     max_area=300000
     min_area=32000
     tone_range = max_area - min_area
     areatone = (area - min_area ) / tone_range
 
-    if areatone > 0.2 and areatone < 0.32:
-        areatone = 342
+    if areatone >= 0.1 and areatone < 0.25:
+        areatone = 290 
+        note="D4"
+    elif areatone >=0.25 and areatone < 0.4:
+        areatone = 329.63
+        note="E4"
+    elif areatone >= 0.4 and areatone < 0.55:
+        areatone = 349.23
         note="F4"
-    elif areatone >=0.32 and areatone < 0.44:
-        areatone = 380
+    elif areatone >= 0.55 and areatone < 0.7:
+        areatone = 392.00 
         note="G4"
-    elif areatone >= 0.44 and areatone < 0.56:
-        areatone = 412
-        note="G#"
-    elif areatone >= 0.56 and areatone < 0.68:
-        areatone = 500 
+    elif areatone >= 0.7 and areatone < 0.85:
+        areatone = 440.00
+        note="A4"  
+    elif areatone >= 0.85 and areatone < 1:
+        areatone = 493.88
         note="B4"
-    elif areatone >= 0.68 and areatone < 0.80:
-        areatone = 542 
-        note="C#"  
-    elif areatone >= 0.8 and areatone < 1:
-        areatone = 612
-        note="D#"
-    elif areatone >= 1:
-        areatone = 676
-        note="E5"
+    elif areatone >= 1: #you can create an area greater than describing above
+        areatone = 523.25
+        note="C5"
     else:
-        note="Rest"
         areatone=0
-    return note, areatone
+        note="Rest"
 
+    return areatone, note
+
+        
+    #return areatone,note
+
+  # if areatone >= 0.1 and areatone < 0.2:
+    #     areatone = 261.63 
+    #     note="C4"
+    # elif areatone >=0.2 and areatone < 0.3:
+    #     areatone = 349.23
+    #     note="F4"
+    # elif areatone >= 0.3 and areatone < 0.4:
+    #     areatone = 311.13
+    #     note="D#4"
+    # elif areatone >= 0.4 and areatone < 0.5:
+    #     areatone = 392.00 
+    #     note="G4"
+    # elif areatone >= 0.5 and areatone < 0.6:
+    #     areatone = 415.30
+    #     note="G#4"  
+    # elif areatone >= 0.6 and areatone < 0.7:
+    #     areatone = 466.16
+    #     note="A#4"
+    # elif areatone >= 0.7 and areatone < 0.8:
+    #     areatone = 523.25
+    #     note="C5"
+    # elif areatone >= 0.8 and areatone < 0.9:
+    #     areatone = 554.37
+    #     note="C#5"
+    # elif areatone >= 1: #you can create an area greater than describing above
+    #     areatone = 659.25
+    #     note="E5"
+    # else:
+    #     areatone=0
+    #     note="Rest"
+  
+# # scale
+
+#     if areatone >= 0.1 and areatone < 0.25:
+#         areatone = 290 
+#         note="D4"
+#     elif areatone >=0.25 and areatone < 0.4:
+#         areatone = 329.63
+#         note="E4"
+#     elif areatone >= 0.4 and areatone < 0.55:
+#         areatone = 349.23
+#         note="F4"
+#     elif areatone >= 0.55 and areatone < 0.7:
+#         areatone = 392.00 
+#         note="G4"
+#     elif areatone >= 0.7 and areatone < 0.85:
+#         areatone = 440.00
+#         note="A4"  
+#     elif areatone >= 0.85 and areatone < 1:
+#         areatone = 493.88
+#         note="B4"
+#     elif areatone >= 1: #you can create an area greater than describing above
+#         areatone = 523.25
+#         note="C5"
+#     else:
+#         areatone=0
+#         note="Rest"
+#mamahomething
+    # if areatone > 0.2 and areatone < 0.32:
+    #     areatone = 342
+    #     note="F4"
+    # elif areatone >=0.32 and areatone < 0.44:
+    #     areatone = 380
+    #     note="G4"
+    # elif areatone >= 0.44 and areatone < 0.56:
+    #     areatone = 412
+    #     note="G#"
+    # elif areatone >= 0.56 and areatone < 0.68:
+    #     areatone = 500 
+    #     note="B4"
+    # elif areatone >= 0.68 and areatone < 0.80:
+    #     areatone = 542 
+    #     note="C#"  
+    # elif areatone >= 0.8 and areatone < 1:
+    #     areatone = 612
+    #     note="D#"
+    # elif areatone >= 1:
+    #     areatone = 676
+    #     note="E5"
+    # else:
+    #     note="Rest"
+    #     areatone=0
+    # return note, areatone
 
 
 # notes_mama=[342,0,500,676,0,676,0,676,0,676,0,676,0,500, 0,542,0,612,0,672,0,542,0,500,0,0,
