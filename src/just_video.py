@@ -2,12 +2,10 @@ import cv2
 import numpy as np
 import multiprocessing
 import time
-#import os
-#manager = multiprocessing.Manager()
-#shared_list_area = manager.list()
+
 from synthesizer import Player, Synthesizer, Waveform
 
-from my_functions import transforming_to_tones, plotting_notes
+from my_functions import transforming_to_tones, plotting_notes, theremin, deep_purple
 from emailing import hand_solo_mail
 
 import pickle
@@ -95,12 +93,16 @@ def handsgame():
         #Print bounding rectangle
         x,y,w,h = cv2.boundingRect(cnts) 
         area=w*h
-        if count==2:
-            #print(area)
+        
+        sharing_memory_elements={"outfile_a":area,"outfile_w":w,"outfile_h":h}
+        if count==2:            
             count=0
             # sharing memory: writing
-            with open('outfile', 'wb') as fp:
-                pickle.dump(area, fp)
+            for e in sharing_memory_elements:
+                #print(e, sharing_memory_elements.get(e))
+                with open(e, 'wb') as fp:
+                    pickle.dump(sharing_memory_elements.get(e), fp)
+                
     
 
         img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
@@ -108,7 +110,7 @@ def handsgame():
         # --------------------------------------------------
 
         # show tone and frequency
-        areatone, note = transforming_to_tones(area)  
+        areatone, note = deep_purple(area)
         cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
         # final image
