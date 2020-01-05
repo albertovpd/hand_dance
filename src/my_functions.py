@@ -25,7 +25,7 @@ def deep_purple(area):
     else:
         areatone=0
         note="Rest"
-
+    
     return areatone, note
 
 

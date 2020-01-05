@@ -33,11 +33,11 @@ def main():
     if config.a=='t':
 
         print("Starting Test")
-        subprocess.run("python3 just_video.py & python3 test.py", shell=True)
+        subprocess.run("python3 just_video.py & python3 just_audio.py", shell=True)
 
     elif config.a=="b":        
         print("Starting Background drums")
-        subprocess.run("python3 just_video & python3 just_audio.py & python3 base_sound.py", shell=True)
+        subprocess.run("python3 just_video.py & python3 just_audio.py & python3 base_sound.py", shell=True)
 
     elif config.a=="u":
         print("Upgrading script")

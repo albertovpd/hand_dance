@@ -89,12 +89,10 @@ def handsgame():
 
     
         #----------------------------------------------------
-        # AREA  
-        #Print bounding rectangle
+        # Bounding rectangle pointing the area of hand captured
         x,y,w,h = cv2.boundingRect(cnts) 
-        area=w*h
         
-        sharing_memory_elements={"outfile_a":area,"outfile_w":w,"outfile_h":h}
+        sharing_memory_elements={"../input/outfile_w":w,"../input/outfile_h":h}
         if count==2:            
             count=0
             # sharing memory: writing
@@ -110,6 +108,7 @@ def handsgame():
         # --------------------------------------------------
 
         # show tone and frequency
+        area=w*h
         areatone, note = deep_purple(area)
         cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
