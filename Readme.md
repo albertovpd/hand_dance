@@ -1,5 +1,7 @@
 # Final project at Ironhack Madrid: 
 
+    Readme currently under construction U_U
+
 ### An introduction to multiprocess libraries and tools in Pyhon and Linux Shell to perform real-time image-capturing with audio outputs in function of the captured image.
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-adudio_multiprocess/master/output/process.png "process")
