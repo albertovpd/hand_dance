@@ -3,24 +3,29 @@ import numpy as np
 import multiprocessing
 import time
 
-from synthesizer import Player, Synthesizer, Waveform
-
-from my_functions import transforming_to_tones, plotting_notes, theremin, deep_purple
-from emailing import hand_solo_mail
+#from synthesizer import Player, Synthesizer, Waveform
+from my_functions import mama_isnt_home, bluesly, chromatic, theremin, deep_purple, plotting_notes
 
 import pickle
 
 notes=[] # to plot notes per frame in the end
 print("VIDEO-AUDIO ENGAGED")
+
+
 def handsgame():    
     #Open Camera object
     cap = cv2.VideoCapture(0) 
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) 
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-
+    timeout = time.time() + 5 #seconds 32-35 is ok
     count=0 # to give some space
     while True:
+        # timer to break the loop
+        if time.time() > timeout:
+            print("Timer finished")
+            break
+
         count+=1
         #Measure execution time
         start_time = time.time()
@@ -91,24 +96,18 @@ def handsgame():
         #----------------------------------------------------
         # Bounding rectangle pointing the area of hand captured
         x,y,w,h = cv2.boundingRect(cnts) 
-        
-        sharing_memory_elements={"../input/outfile_w":w,"../input/outfile_h":h}
-        if count==2:            
+        area=w*h
+        if count==2:
+            with open("../input/outfile_area", "wb") as fp:
+                pickle.dump(area,fp)
             count=0
-            # sharing memory: writing
-            for e in sharing_memory_elements:
-                #print(e, sharing_memory_elements.get(e))
-                with open(e, 'wb') as fp:
-                    pickle.dump(sharing_memory_elements.get(e), fp)
-                
-    
+        
 
         img = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)    
         cv2.drawContours(frame,[hull],-1,(255,255,255),2)
         # --------------------------------------------------
 
-        # show tone and frequency
-        area=w*h
+        # show tone and frequency        
         areatone, note = deep_purple(area)
         cv2.putText(frame,"{}: {}Hz".format(note,areatone) ,(100,100),font,1,(0,255,0),2)
         
@@ -122,17 +121,17 @@ def handsgame():
     cv2.destroyAllWindows()
 
 handsgame()
-    #---------- here ends audio/video -------------
-
-print("-----42-----")
-print("Game finished. Working on your report")
-
-# Plotting notes. Sending mail.
-#plotting_notes(notes)
-
-# email with results
-#hand_solo_mail()
-
-print("Please, cntrl + C to access the terminal")
 
 
+# note formyself from the future: pickle a dictionary of items (there are more problemes writing/reading)
+        #
+        # sharing_memory_elements={"../input/outfile_w":w,"../input/outfile_h":h}
+        # if count==2:            
+        #     count=0
+        #     # sharing memory: writing
+        #     for e in sharing_memory_elements:
+        #         #print(e, sharing_memory_elements.get(e))
+        #         with open(e, 'wb') as fp:
+        #             pickle.dump(sharing_memory_elements.get(e), fp)
+                
+    

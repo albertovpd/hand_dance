@@ -7,7 +7,7 @@ def recording_all():
     CHANNELS = 2
     RATE = 44100
     CHUNK = 1024
-    RECORD_SECONDS = 40
+    RECORD_SECONDS = 35
     WAVE_OUTPUT_FILENAME = "../output/song_and_environment.wav"
     
     audio = pyaudio.PyAudio()

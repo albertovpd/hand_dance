@@ -2,15 +2,32 @@ import os
 from multiprocessing import Pool                                                
                                                                                 
                                                                                 
-processes = ('just_video.py', 'just_audio.py')                                    
+processes = ('just_video.py', 'just_audio.py', "base_sound.py")                                    
                                                   
                                                                                 
 def run_process(process):  
     os.system('python3 {}'.format(process))                                       
                                                                                 
                                                                                 
-pool = Pool(processes=2)                                                        
+pool = Pool(processes=3)                                                        
 pool.map(run_process, processes)        
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 # import pickle
 # from synthesizer import Player, Synthesizer, Waveform
