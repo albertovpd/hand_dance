@@ -48,6 +48,7 @@ Finally, I used argparse and an init function to develop my main script as follo
 
 ![alt](https://github.com/albertovpd/real-time_image-audio_multiprocess/blob/master/output/parallel%20processes.png "parallel")
 
+It is not the fanciest init function, it is just the init function I needed.
 
 # Libraries:
 
