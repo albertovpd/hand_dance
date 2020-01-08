@@ -1,4 +1,4 @@
-# Hand-dance. Final project at Ironhack Madrid.
+# Hand Dance. Final project at Ironhack Madrid.
 
 This is a real-time video-capturing script that frames the area of your hand. That area is the input of another real-time script, this time for audio, and delivers a tone proportional to the area, each frame captured. This are 2 parallel processes, one being fed by the other, running with other parallel processes. 
 
@@ -23,9 +23,11 @@ The concept of "real-time", which is necessary in order to perform the idea, has
     Defining several functions, when a function finishes, another start and so on. That implies if you are displaying a webcam video, the screen freezes every time another scripts works. So you have a frame, it freezes and emit a tone, and so on.
 
     This is an example of how subprocesses work (the father process is not shown, but it is there):
+    
     ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/worker.png "subpro")
     
     This was the workflow working with subprocesses:
+    
     ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/process.png "subpro")
 
 2. Sharing memory:
@@ -43,6 +45,7 @@ The concept of "real-time", which is necessary in order to perform the idea, has
     
 
 Finally, I used argparse and an init function to develop my main script as follows (I removed the config function, just to visualize other elements of the script):
+
 ![alt](https://github.com/albertovpd/real-time_image-audio_multiprocess/blob/master/output/parallel%20processes.png "parallel")
 
 
