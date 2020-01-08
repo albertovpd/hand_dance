@@ -2,20 +2,12 @@
 
 Play music with your hand in front of your webcam, thanks to sharing memory between processes and multiprocess library
 
-# Hand-dance
-This script pe
-Depending on the options you select while running the script, this program perform several task
-This program receives inputs through terminal, deliver custom graphs and save it in PDF. 
-I have been working with datasets and performing web scraping to show the mean price of electricity per year, the mean price one day ahead per year (due to forecast changes and other factors the price of energy one day ahead is important, affects the price the day after) and the rise of minimum salary income. 
+# Hand-dance. Final project at Ironhack Madrid.
 
-- Help and display through terminal
-![alt text](https://github.com/albertovpd/pipelines-project/blob/master/output/terminal%20example.png "final result")
+This is a real-time video-capturing script that frames the area of your hand. That area is the input of another real-time script, this time for audio, and delivers a tone proportional to the area, each frame captured. This are 2 parallel processes, one being fed by the other, running with other parallel processes. 
 
-- Popup graphs through terminal
-![alt text](https://github.com/albertovpd/pipelines-project/blob/master/output/output%20example.png "terminal")
+Personally, I learnt a lot studying options of the multiprocess library (subprocess, pool...) and my real challenge was to share memory in real-time between processes that have not finished yet (something not so obvious in Python).
 
-- Web scraping
-![alt text](https://raw.githubusercontent.com/albertovpd/pipelines-project/master/output/web-enriching.png "web enriching")
 
 # Introduction:
 
@@ -23,61 +15,81 @@ This is an individual project to comprehend and research about:
 
     - OpenCV.
     - Multiprocesses and subprocesses.
-    - Sharing memory between Python scripts without having finished in real-time (that was the milestone)
+    - Sharing memory between Python scripts
+    - Argparse
 
-I wanted to develop some script to play music with both hands, so I started looking for trained neural networks, there are some great ones to detect hands... Then reality struck me... The normal queue of work in Python is to perform a task, finish it and perform other task. Repeat. What about performing several tasks at the same time?
+I wanted to develop a script to play music with both hands, so I started looking for trained neural networks (there are some great ones to detect hands). Then reality struck me: The normal queue of work in Python is to perform a task, finish it, perform other task, repeat... What about performing several tasks at the same time?
 
 The concept of "real-time", which is necessary in order to perform the idea, has been tricky until I found some ways of getting what I wanted:
-1. subprocesses:
+
+1. Subprocesses:
+
+    Defining several functions, when a function finishes, another start and so on. That implies if you are displaying a webcam video, the screen freezes every time another scripts works. So you have a frame, it freezes and emit a tone, and so on.
+
+    This is an example of how subprocesses work:
+    ![alt]("subpro")
+
+2. Sharing memory:
+
+    What if I start researching about the technical features of my PC and develop exquisite async functions with clockwork precision? One script writes, another read in miliseconds. Could be, but it could be faster: What if each frame I pickle the area of hand, overwrite it continuously and when the area is not being written, I read it? (You can not write and read the same file at exactly the sae time).
+    That is what I did.
+
+    Writing memory:
+
+    ![alt]("writing")
+
+    Reading memory:
+
+    ![alt]("Reading")
+
+Finally, I used argparse and an init function to develop my main script as follows (I removed the config function, just to visualize other elements of the script):
+![alt]("parallel")
+
 
 # Libraries:
 
-        uncertain_panda,pandas, numpy, requests, bs4, matplotlib, sys, argparse,subprocess.
+        multiprocessing, subprocess, time, os, pickle, argparse, cv2, pyaudio, wave, numpy, matplotlib, synthesizer, simpleaudio.
 
 
-# Description and results:
+# Description:
 
-The main idea was to create a huge dataset relating price of electric energy depending of its source (oil, coal, renewables), per hour, with the climate historic. It was hard to find a for free weather API for all request I need to perform, so finally, I did the following:
+- Main.py starts the scripts in parallel process
+- just_video.py open a frame where is shown is recording the webcam, draws a green square in your hand, also display the frequency associated and writes in memory the area captured each 2 frames.
+- just_audio.py reads that piece of memory, use functions storaged in my_functions.py to emit sounds and plot a final graph with the notes played. 
+- base_sound.py provides a background drums to make some funky tunes with motivation.
+- recording_environment records everything from your microphone.
 
-- Take all registers of price of energy per hour within the last 4 years (I could not find a bigger dataset with this info).
-    https://www.kaggle.com/nicholasjhana/energy-consumption-generation-prices-and-weather
-
-- Perform the mean  per year <b>with its associated uncertainty</b>, in order to have a real measure.
-
-- Web scraping: relate this 4 years of average electric price with the average salary in Spain.
-    https://datosmacro.expansion.com/mercado-laboral/salario-medio/espana
-
-- Pipelines. Save related functions in the same script and call them when necessary.
-    - From main.py: calling functions in other scripts, creating my function to work through terminal.
-    - From web_enriching: performing web scraping.
-    - From processing_functions.py: cleaning the dataset, calling functions from the file web_enriching.py to enrich my dataset, developing my key function, the ultimate one which takes arguments through terminal (it is called from main.py and work with the input arguments plotting columns of the dataset).
+- Through terminal are also displayed the frequencies emitted. Sometimes appears "hand frame casualty", which mean that area of hand was read at the same time that was being written and is not usable. Thankfully there are a lot of frames per second, so it is not possible for humans to realize if there were some "hand frame casualty" or not.
 
 ### How it works:
 
 In case you are using Python 3, from /src:
 
-    python3 main.py -a "first optional argument" -b "second optional argument"
+    python3 main.py -a "optional argument"
 
 # Conclusion
 
 ### Accomplished goals:
 
-- Develop an effective pipeline with clean code.
-- Run a script with different optional parameters through terminal.
-- Understand the basics of web scraping.
-- Show uncertainties associated with measures or statistic methods.
-- Display graphs through terminal.
-- Save your plots
+- Share memory between not finished scripts.
+- Share tasks between all cores available in my PC.
+- Learn about OpenCV and all its possibilities.
+- Work with video-audio in real-time.
 
 ### Future improvements:
 
-- Better plot labellings 
-- Enlarge the dataset.
-- Apply ML to predict future prices.
-- Finish the graph results with proper label and legends.
-- Send by mail the asked results.
+- Optional parameters in init function to choose what scale do  you want to play.
+- Change audio libraries to have better sounds.
+- Find a way to minimize the "hand area casualties".
+- Get a trained neural work that detects hands, to play both hands in function of the distance.
 
+### References:
+    - The real-time image capturing script is based on this project:
+        - https://github.com/sashagaz/Hand_Detection (Alexander Gazman).
+        - It was written in Python 2. I updated to Python 3.6 and used part of it to my purpose.
 
+    - I used the recording_environment script just to check if I could use all cores of my PC in the parallel process. The owner is:
+        - https://gist.github.com/mabdrabo/8678538 (Mahmoud Abdrabo)
 
 
 
@@ -177,12 +189,6 @@ As sketched in the beginning:
     
     - Great solution: Program the scripts with Async IO, or use a timer so every milisecond is running one of the scripts without interfering with the others when reading/writing in memory.
 
-### References:
-    - The real-time image capturing script is based on this project:
-        - https://github.com/sashagaz/Hand_Detection (Alexander Gazman).
-        - It was written in Python 2 with deprecated code and I updated it to use it in Pyhon 3.6.
 
-    - I used the recording_environment script just to check I could use all cores of my PC in the parallel process. The owner is:
-        - https://gist.github.com/mabdrabo/8678538 (Mahmoud Abdrabo)
     
         
