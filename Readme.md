@@ -2,6 +2,8 @@
 
 This is a real-time video-capturing script that frames the area of your hand. That area is the input of another real-time script, this time for audio, and delivers a tone proportional to the area, each frame captured. This are 2 parallel processes, one being fed by the other, running with other parallel processes. 
 
+![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/mainpic2.png "mainpic")
+
 Personally, I learnt a lot studying options of the multiprocess library (subprocess, pool...) and my real challenge was to share memory in real-time between processes that have not finished yet (something not so obvious in Python).
 
 
