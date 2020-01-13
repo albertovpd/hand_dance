@@ -1,41 +1,39 @@
 # Hand Dance. Final project at Ironhack Madrid.
 
-This is a real-time video-capturing script that frames the area of your hand. That area is the input of another real-time script, this time for audio, and delivers a tone proportional to the area, each frame captured. This are 2 parallel processes, one being fed by the other, running with other parallel processes. 
+Hand Dance is an app that allows you to play music with your hand in front of a camera.
+
+The app processes the position of the hand each frame, draws a square highlighting it and delivers a tone each 2 frames depending on the size of that square.
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/mainpic2.png "mainpic")
 
-Personally, I learnt a lot studying options of the multiprocess library (subprocess, pool...) and my real challenge was to share memory in real-time between processes that have not finished yet (something not so obvious in Python).
 
+### How it works:
+
+In case you are using Python 3, from /src:
+
+    python3 main.py -a "optional argument"
 
 # Introduction:
 
 This is an individual project to comprehend and research about:
 
     - OpenCV.
+    - Sharing memory between not-finished Python scripts.
     - Multiprocesses and subprocesses.
-    - Sharing memory between Python scripts
-    - Argparse
+    - Argparse.
 
-I wanted to develop a script to play music with both hands, so I started looking for trained neural networks (there are some great ones to detect hands). Then reality struck me: The normal queue of work in Python is to perform a task, finish it, perform other task, repeat... What about performing several tasks at the same time?
+The "normal" queue of work in Python is to perform a task, finish it, perform other task, repeat... What about performing several tasks at the same time while one of them is feeding others? For this, several parallel processes start, the most important ones:
 
-The concept of "real-time", which is necessary in order to perform the idea, has been tricky until I found some ways of getting what I wanted:
+    - just_video captures each frame and draws a square highlighting your hand, printing the corresponding tone and calculating the area of the square. This area is also written in memory constantly using pickle.
 
-1. Subprocesses:
+    - just_audio constantly reads in memory, unpick the area and prints the tone associated. Trying to read memory while writing provokes an error, so memory is read inside a try/except structure which prints "Hand frame casualty" when memory was read and written at the same time (the probability of happening is under 5%).
 
-    Defining several functions, when a function finishes, another start and so on. That implies if you are displaying a webcam video, the screen freezes every time another scripts works. So you have a frame, it freezes and emit a tone, and so on.
+# Development.
 
-    This is an example of how subprocesses work (the father process is not shown, but it is there):
-    
-    ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/worker.png "subpro")
-    
-    This was the workflow working with subprocesses:
-    
-    ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/process.png "subpro")
+The concept of "real-time", which is necessary in order to perform the idea, has been achieved in 2 different ways:
 
-2. Sharing memory:
+1. Sharing memory:
 
-    What if I start researching about the technical features of my PC and develop exquisite async functions with clockwork precision? One script writes, another read in miliseconds. Could be, but it could be faster: What if each frame I pickle the area of hand, overwrite it continuously and when the area is not being written, I read it? (You can not write and read the same file at exactly the sae time).
-    That is what I did.
 
     Writing memory:
 
@@ -45,33 +43,22 @@ The concept of "real-time", which is necessary in order to perform the idea, has
 
     ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/reading%20memory.png "Reading")
     
+2. Subprocesses:
 
-Finally, I used argparse and an init function to develop my main script as follows (I removed the config function, just to visualize other elements of the script):
+    Using the subprocess associated to the multiprocessing library, when a function finishes, another starts. That implies if you are displaying a webcam video, the screen freezes every time another scripts works. So it displays a frame, freezes, emits a tone, and so on.
 
-![alt](https://github.com/albertovpd/real-time_image-audio_multiprocess/blob/master/output/parallel%20processes.png "parallel")
+    This is the workflow with subprocesses:
+    
+    ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/process.png "subpro")
 
-It is not the fanciest init function, it is just the init function I needed.
+- All your music can be recorded and saved in a .mp3 file.
+
+- All the notes played are displayed in a final plot, and saved it in .PDF format.
 
 # Libraries:
 
         multiprocessing, subprocess, time, os, pickle, argparse, cv2, pyaudio, wave, numpy, matplotlib, synthesizer, simpleaudio.
 
-
-# Description:
-
-- Main.py starts the scripts in parallel process
-- just_video.py open a frame where is shown is recording the webcam, draws a green square in your hand, also display the frequency associated and writes in memory the area captured each 2 frames.
-- just_audio.py reads that piece of memory, use functions storaged in my_functions.py to emit sounds and plot a final graph with the notes played. 
-- base_sound.py provides a background drums to make some funky tunes with motivation.
-- recording_environment records everything from your microphone.
-
-- Through terminal are also displayed the frequencies emitted. Sometimes appears "hand frame casualty", which mean that area of hand was read at the same time that was being written and is not usable. Thankfully there are a lot of frames per second, so it is not possible for humans to realize if there were some "hand frame casualty" or not.
-
-### How it works:
-
-In case you are using Python 3, from /src:
-
-    python3 main.py -a "optional argument"
 
 # Conclusion
 
@@ -79,15 +66,16 @@ In case you are using Python 3, from /src:
 
 - Share memory between not finished scripts.
 - Share tasks between all cores available in my PC.
-- Learn about OpenCV and all its possibilities.
+- Working with multiprocessing library.
+- Working with OpenCV.
 - Work with video-audio in real-time.
 
 ### Future improvements:
 
-- Optional parameters in init function to choose what scale do  you want to play.
-- Change audio libraries to have better sounds.
+- Optional parameters in init function to choose a concrete music scale to play.
+- Increase the audio libraries to have different sounds.
 - Find a way to minimize the "hand area casualties".
-- Get a trained neural work that detects hands, to play both hands in function of the distance.
+- Get a trained neural work that detects hands, to play both hands in function of the distance between them.
 
 ### References:
 
