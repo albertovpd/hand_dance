@@ -1,10 +1,12 @@
 # Hand Dance. Final project at Ironhack Madrid.
 
-Hand Dance is an app that allows you to play music with your hand in front of a camera.
+Hand Dance is an app that allows you to play music with your hand in front of a camera thanks to real-time image and audio multiprocesses.
 
 The app processes the position of the hand each frame, draws a square highlighting it and delivers a tone each 2 frames depending on the size of that square.
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/mainpic2.png "mainpic")
+
+Quick demo: https://youtu.be/0ksWsoNuMvk
 
 
 ### How it works:
