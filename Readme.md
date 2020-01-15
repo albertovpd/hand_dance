@@ -6,6 +6,8 @@ The app processes the position of the hand each frame, draws a square highlighti
 
 ![alt](https://raw.githubusercontent.com/albertovpd/real-time_image-audio_multiprocess/master/output/mainpic2.png "mainpic")
 
+Quick demo: https://youtu.be/0ksWsoNuMvk
+
 
 ### How it works:
 
