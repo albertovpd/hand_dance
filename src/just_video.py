@@ -18,7 +18,7 @@ def handsgame():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000) 
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-    timeout = time.time() + 5 #seconds 32-35 is ok
+    timeout = time.time() + 35 #seconds 32-35 is ok
     count=0 # to give some space
     while True:
         # timer to break the loop

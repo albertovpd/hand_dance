@@ -7,7 +7,7 @@ import time
 #shared_list_area = manager.list()
 from synthesizer import Player, Synthesizer, Waveform
 
-from my_functions import transforming_to_tones, plotting_notes
+from my_functions import deep_purple, plotting_notes
 #from emailing import hand_solo_mail
 
 notes=[] # to plot notes per frame in the end
@@ -99,7 +99,7 @@ def handsgame():
         # --------------------------------------------------
 
         # turning area size intro notes
-        areatone, note = transforming_to_tones(area)
+        areatone, note = deep_purple(area)
         notes.append(note)
 
         # multiprocess. sound

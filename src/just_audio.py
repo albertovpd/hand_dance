@@ -10,7 +10,7 @@ synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.7, use_osc2
 notes=[]
 
 
-timeout = time.time() + 5 #seconds 32-35 is ok
+timeout = time.time() + 35 #seconds 32-35 is ok
 print("Timer engaged")
 while True:
     # timer to break the loop
